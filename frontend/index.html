@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ICC Student Portal</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <!-- HTML Templates -->
+    <template id="login-template">
+      <div class="auth-container">
+        <div class="auth-card">
+          <div class="auth-header">
+            <h1>Interface Computer College</h1>
+            <p>Student Portal</p>
+          </div>
+
+          <div id="login-section">
+            <h2>Login</h2>
+            <form id="login-form">
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  placeholder="your@email.com"
+                />
+                <span class="error-msg" id="email-error"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  required
+                  placeholder="Enter your password"
+                />
+                <span class="error-msg" id="password-error"></span>
+              </div>
+
+              <div id="login-error" class="error-msg"></div>
+
+              <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Change Password Template -->
+    <template id="change-password-template">
+      <div class="auth-container">
+        <div class="auth-card">
+          <div class="auth-header">
+            <h1>Interface Computer College</h1>
+            <p>Change Password</p>
+          </div>
+
+          <div id="change-password-section">
+            <h2>First Login - Change Password Required</h2>
+            <p class="text-muted">
+              For security reasons, you must change your password on your first
+              login.
+            </p>
+
+            <form id="change-password-form">
+              <div class="form-group">
+                <label for="current-password">Current Password</label>
+                <input
+                  type="password"
+                  id="current-password"
+                  name="currentPassword"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="new-password">New Password</label>
+                <input
+                  type="password"
+                  id="new-password"
+                  name="newPassword"
+                  required
+                  placeholder="At least 6 characters"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="confirm-password">Confirm New Password</label>
+                <input
+                  type="password"
+                  id="confirm-password"
+                  name="confirmPassword"
+                  required
+                />
+              </div>
+
+              <div id="change-password-error" class="error-msg"></div>
+
+              <button type="submit" class="btn btn-primary">
+                Change Password
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Student Dashboard Template -->
+    <template id="student-dashboard-template">
+      <div class="dashboard-layout">
+        <nav class="sidebar">
+          <div class="logo">
+            <h3>ICC</h3>
+            <p>Student Portal</p>
+          </div>
+
+          <ul class="nav-menu">
+            <li>
+              <a href="#" data-page="profile" class="nav-link active"
+                >Profile</a
+              >
+            </li>
+            <li>
+              <a href="#" data-page="subjects" class="nav-link">My Subjects</a>
+            </li>
+            <li><a href="#" data-page="grades" class="nav-link">Grades</a></li>
+            <li>
+              <a href="#" data-page="announcements" class="nav-link"
+                >Announcements</a
+              >
+            </li>
+            <li>
+              <a href="#" data-page="materials" class="nav-link">Materials</a>
+            </li>
+            <li>
+              <a href="#" data-page="tuition" class="nav-link">Tuition</a>
+            </li>
+          </ul>
+
+          <div class="nav-footer">
+            <button id="logout-btn" class="btn btn-logout">Logout</button>
+          </div>
+        </nav>
+
+        <div class="main-content">
+          <header class="top-header">
+            <h1>Welcome to Interface Computer College Portal</h1>
+            <div class="header-right">
+              <span id="user-name"></span>
+            </div>
+          </header>
+
+          <div class="content-area" id="content-area">
+            <!-- Page content will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Profile Page -->
+    <template id="profile-page-template">
+      <div class="page-container">
+        <h2>My Profile</h2>
+
+        <div class="profile-card">
+          <div class="profile-header">
+            <div class="profile-avatar">
+              <div class="avatar-placeholder">
+                <span id="avatar-initials"></span>
+              </div>
+            </div>
+            <div class="profile-info">
+              <h3 id="profile-name"></h3>
+              <p id="profile-student-id"></p>
+            </div>
+          </div>
+
+          <div class="profile-details">
+            <div class="detail-row">
+              <span class="label">Email:</span>
+              <span id="profile-email"></span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Phone:</span>
+              <span id="profile-contact"></span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Address:</span>
+              <span id="profile-address"></span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Date of Birth:</span>
+              <span id="profile-dob"></span>
+            </div>
+          </div>
+
+          <button id="edit-profile-btn" class="btn btn-primary">
+            Edit Profile
+          </button>
+        </div>
+
+        <!-- Edit Profile Form (hidden by default) -->
+        <div
+          id="edit-profile-form"
+          class="form-container"
+          style="display: none"
+        >
+          <h3>Edit Profile</h3>
+          <form id="profile-edit-form">
+            <div class="form-group">
+              <label for="edit-first-name">First Name</label>
+              <input type="text" id="edit-first-name" name="firstName" />
+            </div>
+            <div class="form-group">
+              <label for="edit-last-name">Last Name</label>
+              <input type="text" id="edit-last-name" name="lastName" />
+            </div>
+            <div class="form-group">
+              <label for="edit-contact">Phone Number</label>
+              <input type="tel" id="edit-contact" name="contact" />
+            </div>
+            <div class="form-group">
+              <label for="edit-address">Address</label>
+              <textarea id="edit-address" name="address"></textarea>
+            </div>
+            <div id="profile-edit-error" class="error-msg"></div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button
+              type="button"
+              id="cancel-edit-btn"
+              class="btn btn-secondary"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      </div>
+    </template>
+
+    <!-- Subjects Page -->
+    <template id="subjects-page-template">
+      <div class="page-container">
+        <h2>My Subjects</h2>
+
+        <div class="subjects-grid" id="subjects-grid">
+          <!-- Subjects will be loaded here -->
+        </div>
+      </div>
+    </template>
+
+    <!-- Grades Page -->
+    <template id="grades-page-template">
+      <div class="page-container">
+        <h2>My Grades</h2>
+
+        <div class="table-container">
+          <table class="grades-table">
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Midterm</th>
+                <th>Finals</th>
+                <th>Projects</th>
+                <th>Participation</th>
+                <th>Final Grade</th>
+              </tr>
+            </thead>
+            <tbody id="grades-tbody">
+              <!-- Grades will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </template>
+
+    <!-- Announcements Page -->
+    <template id="announcements-page-template">
+      <div class="page-container">
+        <h2>Announcements</h2>
+
+        <div class="announcements-list" id="announcements-list">
+          <!-- Announcements will be loaded here -->
+        </div>
+      </div>
+    </template>
+
+    <!-- Materials Page -->
+    <template id="materials-page-template">
+      <div class="page-container">
+        <h2>Learning Materials</h2>
+
+        <div class="materials-list" id="materials-list">
+          <!-- Materials will be loaded here -->
+        </div>
+      </div>
+    </template>
+
+    <!-- Tuition Page -->
+    <template id="tuition-page-template">
+      <div class="page-container">
+        <h2>Tuition & Payments</h2>
+
+        <div class="tuition-summary">
+          <div class="summary-card">
+            <h3>Total Balance</h3>
+            <p class="amount" id="total-balance">₱ 0.00</p>
+          </div>
+          <div class="summary-card">
+            <h3>Total Paid</h3>
+            <p class="amount success" id="total-paid">₱ 0.00</p>
+          </div>
+          <div class="summary-card">
+            <h3>Total Amount</h3>
+            <p class="amount info" id="total-amount">₱ 0.00</p>
+          </div>
+        </div>
+
+        <h3>Payment History</h3>
+        <div class="table-container">
+          <table class="payment-table">
+            <thead>
+              <tr>
+                <th>Academic Year</th>
+                <th>Semester</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Balance</th>
+                <th>Status</th>
+                <th>Due Date</th>
+              </tr>
+            </thead>
+            <tbody id="payment-tbody">
+              <!-- Payment records will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </template>
+
+    <!-- Admin Dashboard Template -->
+    <template id="admin-dashboard-template">
+      <div class="dashboard-layout">
+        <nav class="sidebar">
+          <div class="logo">
+            <h3>ICC</h3>
+            <p>Admin Portal</p>
+          </div>
+
+          <ul class="nav-menu">
+            <li>
+              <a href="#" data-page="admin-users" class="nav-link active"
+                >Manage Users</a
+              >
+            </li>
+            <li>
+              <a href="#" data-page="admin-subjects" class="nav-link"
+                >Manage Subjects</a
+              >
+            </li>
+            <li>
+              <a href="#" data-page="admin-payments" class="nav-link"
+                >Payments</a
+              >
+            </li>
+            <li>
+              <a href="#" data-page="admin-announcements" class="nav-link"
+                >Announcements</a
+              >
+            </li>
+          </ul>
+
+          <div class="nav-footer">
+            <button id="logout-btn" class="btn btn-logout">Logout</button>
+          </div>
+        </nav>
+
+        <div class="main-content">
+          <header class="top-header">
+            <h1>Welcome to Interface Computer College Portal</h1>
+            <div class="header-right">
+              <span id="user-name"></span>
+            </div>
+          </header>
+
+          <div class="content-area" id="content-area">
+            <!-- Page content will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Admin Users Page -->
+    <template id="admin-users-page-template">
+      <div class="page-container">
+        <h2>Manage Users</h2>
+
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="students">Students</button>
+          <button class="tab-btn" data-tab="teachers">Teachers</button>
+        </div>
+
+        <div id="students-tab" class="tab-content active">
+          <div class="action-bar">
+            <button id="create-student-btn" class="btn btn-primary">
+              Create New Student
+            </button>
+          </div>
+
+          <div class="table-container">
+            <table class="users-table">
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Contact</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="students-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="teachers-tab" class="tab-content">
+          <div class="action-bar">
+            <button id="create-teacher-btn" class="btn btn-primary">
+              Create New Teacher
+            </button>
+          </div>
+
+          <div class="table-container">
+            <table class="users-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Contact</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="teachers-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Create User Modal -->
+    <template id="create-user-modal-template">
+      <div class="modal-overlay" id="user-modal-overlay">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 id="modal-title">Create New User</h2>
+            <button class="modal-close">&times;</button>
+          </div>
+
+          <form id="create-user-form">
+            <div class="form-group">
+              <label for="modal-email">Email Address</label>
+              <input type="email" id="modal-email" name="email" required />
+            </div>
+
+            <div class="form-group">
+              <label for="modal-first-name">First Name</label>
+              <input
+                type="text"
+                id="modal-first-name"
+                name="firstName"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="modal-last-name">Last Name</label>
+              <input
+                type="text"
+                id="modal-last-name"
+                name="lastName"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="modal-contact">Contact Number</label>
+              <input type="tel" id="modal-contact" name="contact" />
+            </div>
+
+            <div id="modal-error" class="error-msg"></div>
+
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">
+                Create Account
+              </button>
+              <button type="button" class="btn btn-secondary modal-close">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </template>
+
+    <!-- Admin Subjects Page -->
+    <template id="admin-subjects-page-template">
+      <div class="page-container">
+        <h2>Manage Subjects</h2>
+
+        <div class="action-bar">
+          <button id="create-subject-btn" class="btn btn-primary">
+            Create New Subject
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table class="subjects-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Semester</th>
+                <th>Units</th>
+                <th>Teacher</th>
+                <th>Students Enrolled</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="subjects-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </template>
+
+    <!-- Admin Payments Page -->
+    <template id="admin-payments-page-template">
+      <div class="page-container">
+        <h2>Payment Management</h2>
+
+        <div class="action-bar">
+          <button id="create-payment-btn" class="btn btn-primary">
+            Create Payment Record
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table class="payment-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Student ID</th>
+                <th>Academic Year</th>
+                <th>Semester</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Balance</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-payment-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </template>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script src="utils.js"></script>
+    <script src="auth.js"></script>
+    <script src="pages/student-dashboard.js"></script>
+    <script src="pages/admin-dashboard.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
