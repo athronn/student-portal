@@ -2,7 +2,7 @@
 
 const Config = {
   // API Base URL - Change this when deploying to a live backend
-  API_BASE_URL: "http://localhost:5000/api",
+  API_BASE_URL: "https://student-portal-backend-s0b3.onrender.com/api",
 
   // Application name
   APP_NAME: "ICC Student Portal",
