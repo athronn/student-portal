@@ -19,6 +19,57 @@ mongoose
     process.exit(1);
   });
 
+const User = require("./models/User");
+
+// ===== ONE-TIME SETUP ENDPOINT =====
+app.post("/api/setup/create-admin", async (req, res) => {
+  try {
+    const adminExists = await User.findOne({ role: "admin" });
+    if (adminExists) {
+      return res.status(400).json({
+        message: "Admin account already exists. Setup disabled.",
+      });
+    }
+
+    const { email, password, firstName, lastName } = req.body;
+
+    if (!email || !password || !firstName || !lastName) {
+      return res.status(400).json({
+        message:
+          "All fields are required: email, password, firstName, lastName",
+      });
+    }
+
+    const admin = new User({
+      studentID: "ADMIN-001",
+      email: email.toLowerCase(),
+      password: password,
+      firstName,
+      lastName,
+      role: "admin",
+      isActive: true,
+      mustChangePassword: true,
+      contact: "",
+      address: "",
+    });
+
+    await admin.save();
+
+    res.status(201).json({
+      message: "Admin account created successfully",
+      admin: {
+        studentID: admin.studentID,
+        email: admin.email,
+        firstName: admin.firstName,
+        lastName: admin.lastName,
+      },
+    });
+  } catch (error) {
+    console.error("Setup error:", error);
+    res.status(500).json({ message: "Server error during setup" });
+  }
+});
+
 // ===== ROUTES =====
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/admin", require("./routes/admin"));
